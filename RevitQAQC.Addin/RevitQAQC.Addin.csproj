@@ -13,4 +13,9 @@
     <ProjectReference Include="..\RevitQAQC.Shared\RevitQAQC.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Commands\" />
+    <Folder Include="UI\" />
+  </ItemGroup>
+
 </Project>

@@ -27,4 +27,9 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="CheckTests\" />
+    <Folder Include="EngineTests\" />
+  </ItemGroup>
+
 </Project>

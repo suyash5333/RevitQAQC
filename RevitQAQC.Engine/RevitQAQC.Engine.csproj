@@ -12,4 +12,10 @@
     <ProjectReference Include="..\RevitQAQC.Shared\RevitQAQC.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Checks\" />
+    <Folder Include="Processors\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>

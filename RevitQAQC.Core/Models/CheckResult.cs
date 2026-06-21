@@ -1,4 +1,4 @@
-﻿namespace RevitQAQC.Shared;
+﻿namespace RevitQAQC.Core.Models;
 
 public class CheckResult
 {
