@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Command">
+    <Name>RevitQAQC</Name>
+
+    <Assembly>D:\AUTOMATION\RevitQAQC\RevitQAQC.Core\bin\Debug\net8.0\RevitQAQC.Core.dll</Assembly>
+
+    <AddInId>8D83C886-B739-4ACD-A9DB-1BC78F315B2B</AddInId>
+
+    <FullClassName>RevitQAQC.Core.HelloCommand</FullClassName>
+
+    <Text>RevitQAQC</Text>
+
+    <VendorId>ST</VendorId>
+
+    <VendorDescription>Suyash Thakar Revit QAQC</VendorDescription>
+  </AddIn>
+</RevitAddIns>

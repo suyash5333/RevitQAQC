@@ -1,3 +1,9 @@
 <Solution>
+  <Project Path="RevitQAQC.Addin/RevitQAQC.Addin.csproj" Id="7a89151a-2e9e-414f-8398-d4c19adcadd0" />
   <Project Path="RevitQAQC.Core/RevitQAQC.Core.csproj" Id="67422010-4c8d-46fa-8350-7724c746c237" />
+  <Project Path="RevitQAQC.Engine/RevitQAQC.Engine.csproj" Id="2feb64ba-3013-4a45-a9ed-d7565f9a9bf1" />
+  <Project Path="RevitQAQC.Interfaces/RevitQAQC.Interfaces.csproj" Id="b8e9b791-1945-486c-b430-f716c5670e4d" />
+  <Project Path="RevitQAQC.Shared/RevitQAQC.Shared.csproj" Id="47f0f713-c16c-4806-9d53-f062d941ea61" />
+  <Project Path="RevitQAQC.Tests/RevitQAQC.Tests.csproj" Id="1475a12d-b1fb-4b9c-9908-838580b660b1" />
+  <Project Path="RevitQAQC.WPF/RevitQAQC.WPF.csproj" Id="e64dfa53-e993-4e1b-a27a-7ffeb7bd5517" />
 </Solution>
