@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace RevitQAQC.Core.Models;
+namespace RevitQAQC.Shared.Models;
 
 public class ReportModel
 {

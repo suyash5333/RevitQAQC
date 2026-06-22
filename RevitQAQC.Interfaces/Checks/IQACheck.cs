@@ -1,10 +1,13 @@
-﻿namespace RevitQAQC.Interfaces.Checks;
+﻿using Autodesk.Revit.DB;
 
-public interface IQACheck
+namespace RevitQAQC.Interfaces.Checks
 {
-    string CheckName { get; }
+    public interface IQACheck
+    {
+        string CheckName { get; }
 
-    string Description { get; }
+        string Description { get; }
 
-    bool Execute();
+        bool Execute(Document doc);
+    }
 }

@@ -8,6 +8,16 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\RevitQAQC.Interfaces\RevitQAQC.Interfaces.csproj" />
+	  <ProjectReference Include="..\RevitQAQC.Shared\RevitQAQC.Shared.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="RevitAPI">
+	    <HintPath>C:\Program Files\Autodesk\Revit 2026\RevitAPI.dll</HintPath>
+	  </Reference>
+	  <Reference Include="RevitAPIUI">
+	    <HintPath>C:\Program Files\Autodesk\Revit 2026\RevitAPIUI.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 
 </Project>
