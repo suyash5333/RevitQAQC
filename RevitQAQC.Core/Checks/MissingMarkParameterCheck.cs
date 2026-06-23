@@ -1,5 +1,6 @@
-﻿using RevitQAQC.Interfaces.Checks;
-using Autodesk.Revit.DB;
+﻿using Autodesk.Revit.DB;
+using RevitQAQC.Interfaces.Checks;
+using RevitQAQC.Shared.Models;
 
 namespace RevitQAQC.Core.Checks
 {
@@ -9,11 +10,13 @@ namespace RevitQAQC.Core.Checks
 
         public string Description => "Checks elements that have empty Mark values.";
 
-        public bool Execute(Document doc)
+        public CheckResult Execute(Document doc)
         {
             var elements = new FilteredElementCollector(doc)
                 .WhereElementIsNotElementType()
                 .ToElements();
+
+            int missingMarkCount = 0;
 
             foreach (var element in elements)
             {
@@ -22,16 +25,25 @@ namespace RevitQAQC.Core.Checks
 
                 if (markParam == null)
                 {
-                    return false;
+                    missingMarkCount++;
+                    continue;
                 }
 
                 if (string.IsNullOrWhiteSpace(markParam.AsString()))
                 {
-                    return false;
+                    missingMarkCount++;
                 }
             }
 
-            return true;
+            return new CheckResult
+            {
+                CheckName = CheckName,
+                IsPass = missingMarkCount == 0,
+                Message = missingMarkCount == 0
+                    ? "All elements have valid Mark values."
+                    : $"{missingMarkCount} elements have missing or empty Mark values.",
+                IssueCount = missingMarkCount
+            };
         }
     }
 }

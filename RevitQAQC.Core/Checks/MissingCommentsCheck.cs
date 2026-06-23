@@ -1,5 +1,6 @@
-﻿using RevitQAQC.Interfaces.Checks;
-using Autodesk.Revit.DB;
+﻿using Autodesk.Revit.DB;
+using RevitQAQC.Interfaces.Checks;
+using RevitQAQC.Shared.Models;
 
 namespace RevitQAQC.Core.Checks
 {
@@ -9,11 +10,13 @@ namespace RevitQAQC.Core.Checks
 
         public string Description => "Checks elements with empty Comments.";
 
-        public bool Execute(Document doc)
+        public CheckResult Execute(Document doc)
         {
             var elements = new FilteredElementCollector(doc)
                 .WhereElementIsNotElementType()
                 .ToElements();
+
+            int missingCommentsCount = 0;
 
             foreach (var element in elements)
             {
@@ -22,16 +25,25 @@ namespace RevitQAQC.Core.Checks
 
                 if (commentsParam == null)
                 {
-                    return false;
+                    missingCommentsCount++;
+                    continue;
                 }
 
                 if (string.IsNullOrWhiteSpace(commentsParam.AsString()))
                 {
-                    return false;
+                    missingCommentsCount++;
                 }
             }
 
-            return true;
+            return new CheckResult
+            {
+                CheckName = CheckName,
+                IsPass = missingCommentsCount == 0,
+                Message = missingCommentsCount == 0
+                    ? "All elements have valid Comments values."
+                    : $"{missingCommentsCount} elements have missing or empty Comments.",
+                IssueCount = missingCommentsCount
+            };
         }
     }
 }

@@ -7,6 +7,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+	  <PackageReference Include="PDFsharp" Version="6.2.4" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <ProjectReference Include="..\RevitQAQC.Interfaces\RevitQAQC.Interfaces.csproj" />
 	  <ProjectReference Include="..\RevitQAQC.Shared\RevitQAQC.Shared.csproj" />
 	</ItemGroup>

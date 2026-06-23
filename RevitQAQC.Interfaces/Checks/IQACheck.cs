@@ -1,5 +1,5 @@
 ﻿using Autodesk.Revit.DB;
-
+using RevitQAQC.Shared.Models;
 namespace RevitQAQC.Interfaces.Checks
 {
     public interface IQACheck
@@ -8,6 +8,6 @@ namespace RevitQAQC.Interfaces.Checks
 
         string Description { get; }
 
-        bool Execute(Document doc);
+        CheckResult Execute(Document doc);
     }
 }

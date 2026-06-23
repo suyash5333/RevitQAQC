@@ -1,6 +1,7 @@
 ﻿using Autodesk.Revit.DB;
 using RevitQAQC.Interfaces.Checks;
 using System.Collections.Generic;
+using RevitQAQC.Shared.Models;
 
 namespace RevitQAQC.Core.Checks
 {
@@ -10,13 +11,14 @@ namespace RevitQAQC.Core.Checks
 
         public string Description => "Checks for duplicate Mark parameter values.";
 
-        public bool Execute(Document doc)
+        public CheckResult Execute(Document doc)
         {
-            var usedMarks = new HashSet<string>();
-
             var elements = new FilteredElementCollector(doc)
                 .WhereElementIsNotElementType()
                 .ToElements();
+
+            var usedMarks = new HashSet<string>();
+            int duplicateCount = 0;
 
             foreach (var element in elements)
             {
@@ -31,12 +33,24 @@ namespace RevitQAQC.Core.Checks
                     continue;
 
                 if (usedMarks.Contains(markValue))
-                    return false;
-
-                usedMarks.Add(markValue);
+                {
+                    duplicateCount++;
+                }
+                else
+                {
+                    usedMarks.Add(markValue);
+                }
             }
 
-            return true;
+            return new CheckResult
+            {
+                CheckName = CheckName,
+                IsPass = duplicateCount == 0,
+                Message = duplicateCount == 0
+                    ? "No duplicate Mark values found."
+                    : $"{duplicateCount} duplicate Mark values found.",
+                IssueCount = duplicateCount
+            };
         }
     }
 }

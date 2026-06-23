@@ -7,4 +7,8 @@ public class CheckResult
     public bool IsPass { get; set; }
 
     public string Message { get; set; } = "";
+
+    public int IssueCount { get; set; }
+
+    public int value { get; set; }
 }

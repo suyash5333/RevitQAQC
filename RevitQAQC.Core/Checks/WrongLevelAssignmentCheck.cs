@@ -1,5 +1,6 @@
 ﻿using Autodesk.Revit.DB;
 using RevitQAQC.Interfaces.Checks;
+using RevitQAQC.Shared.Models;
 
 namespace RevitQAQC.Core.Checks
 {
@@ -10,30 +11,33 @@ namespace RevitQAQC.Core.Checks
         public string Description =>
             "Checks whether elements have a valid level assignment.";
 
-        public bool Execute(Document doc)
+        public CheckResult Execute(Document doc)
         {
             var elements = new FilteredElementCollector(doc)
                 .WhereElementIsNotElementType()
                 .ToElements();
 
+            int invalidLevelCount = 0;
+
             foreach (var element in elements)
             {
-                ElementId levelId = element.LevelId;
-
-                if (levelId == ElementId.InvalidElementId)
-                {
-                    return false;
-                }
-
-                Level level = doc.GetElement(levelId) as Level;
+                Level level = doc.GetElement(element.LevelId) as Level;
 
                 if (level == null)
                 {
-                    return false;
+                    invalidLevelCount++;
                 }
             }
 
-            return true;
+            return new CheckResult
+            {
+                CheckName = CheckName,
+                IsPass = invalidLevelCount == 0,
+                Message = invalidLevelCount == 0
+                    ? "All elements have valid level assignments."
+                    : $"{invalidLevelCount} elements have invalid level assignments.",
+                IssueCount = invalidLevelCount
+            };
         }
     }
 }
