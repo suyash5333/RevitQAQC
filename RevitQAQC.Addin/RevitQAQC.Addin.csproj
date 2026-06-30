@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+	  <TargetFramework>net8.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	  <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -12,6 +12,7 @@
     <ProjectReference Include="..\RevitQAQC.Engine\RevitQAQC.Engine.csproj" />
     <ProjectReference Include="..\RevitQAQC.Interfaces\RevitQAQC.Interfaces.csproj" />
     <ProjectReference Include="..\RevitQAQC.Shared\RevitQAQC.Shared.csproj" />
+    <ProjectReference Include="..\RevitQAQC.WPF\RevitQAQC.WPF.csproj" />
   </ItemGroup>
 
   <ItemGroup>

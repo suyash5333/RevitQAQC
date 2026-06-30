@@ -9,6 +9,7 @@ using RevitQAQC.Interfaces.Checks;
 using RevitQAQC.Shared.Models;
 using System.Collections.Generic;
 using RevitQAQC.Shared.Models;
+using RevitQAQC.WPF.Views;
 
 namespace RevitQAQC.Addin.Commands
 {
@@ -57,11 +58,9 @@ namespace RevitQAQC.Addin.Commands
                 report,
                 @"C:\Temp\QAQC_Report.pdf");
 
-            TaskDialog.Show(
-                "QAQC Complete",
-                $"Health Score: {report.HealthScore.Score}%\n" +
-                $"Grade: {report.HealthScore.Grade}\n\n" +
-                $"JSON and PDF reports generated.");
+            DashboardWindow dashboard = new DashboardWindow(report);
+
+            dashboard.ShowDialog();
 
             return Result.Succeeded;
         }
