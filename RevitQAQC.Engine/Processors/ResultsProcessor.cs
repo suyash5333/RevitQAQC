@@ -8,21 +8,35 @@ namespace RevitQAQC.Engine.Processors
     {
         public HealthScoreResult Calculate(List<CheckResult> results)
         {
-            int totalIssues = results.Sum(r => r.IssueCount);
+            int totalElements = results.FirstOrDefault(r => r.CheckName == "Element Count")
+             ?.value ?? 0;
 
-            int totalElements = results
-                .FirstOrDefault(r => r.CheckName == "Element Count")
-                ?.value ?? 0;
-
-            double score = 100;
+            double score = 0;
 
             if (totalElements > 0)
             {
-                score = ((double)(totalElements - totalIssues)
-                         / totalElements) * 100;
-            }
+                var weights = new Dictionary<string, double>
+            {
+                { "Missing Mark Parameter", 30 },
+                { "Missing Comments", 20 },
+                { "Duplicate Mark Values", 10 },
+                { "Level Assignment Check", 25 },
+                { "Model Standards Check", 15 }
+            };
 
-            score = Math.Max(0, score);
+                foreach (var result in results)
+                {
+                    if (weights.ContainsKey(result.CheckName))
+                    {
+                        double checkScore = 100 -
+                            ((double)result.IssueCount / totalElements * 100);
+
+                        checkScore = Math.Max(0, checkScore);
+
+                        score += checkScore * (weights[result.CheckName] / 100.0);
+                    }
+                }
+            }
 
             string grade;
 

@@ -1,6 +1,7 @@
 ﻿using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using RevitQAQC.Shared.Models;
+using PdfSharp.Fonts;
 
 namespace RevitQAQC.Engine.Reports
 {
@@ -8,6 +9,11 @@ namespace RevitQAQC.Engine.Reports
     {
         public void Generate(ReportModel report, string filePath)
         {
+            if (GlobalFontSettings.FontResolver == null)
+            {
+                GlobalFontSettings.UseWindowsFontsUnderWindows = true;
+            }
+
             PdfDocument document = new PdfDocument();
 
             document.Info.Title = "Revit QAQC Report";
@@ -16,9 +22,9 @@ namespace RevitQAQC.Engine.Reports
 
             XGraphics gfx = XGraphics.FromPdfPage(page);
 
-            XFont titleFont = new XFont("Arial", 18);
-            XFont headingFont = new XFont("Arial", 14);
-            XFont bodyFont = new XFont("Arial", 10);
+            XFont titleFont = new XFont("Verdana", 18);
+            XFont headingFont = new XFont("Verdana", 14);
+            XFont bodyFont = new XFont("Verdana", 10);
 
             double y = 40;
 
