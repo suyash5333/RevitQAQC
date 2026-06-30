@@ -89,7 +89,8 @@ The current version of RevitQAQC performs the following automated quality checks
 
 ### Dashboard
 
-> *(Add dashboard screenshot here)*
+<img width="1408" height="938" alt="image" src="https://github.com/user-attachments/assets/18d4d73f-d220-4ee6-b620-d3ddf25348e8" />
+
 
 ### PDF Report
 
@@ -98,4 +99,41 @@ The current version of RevitQAQC performs the following automated quality checks
 
 ### JSON Report
 
-> *(Add generated JSON report screenshot here)*
+<img width="1920" height="1033" alt="image" src="https://github.com/user-attachments/assets/70babf5e-b6c1-4647-a807-dd57986168d3" />
+
+## Getting Started
+
+### Prerequisites
+
+- Autodesk Revit 2026
+- .NET 8
+- Visual Studio 2022
+
+### Installation
+
+1. Clone the repository.
+2. Open the solution in Visual Studio.
+3. Build the solution.
+4. Copy the generated `.addin` file to the Revit Addins folder.
+5. Launch Autodesk Revit 2026.
+6. Open a Revit project and run **RevitQAQC** from the ribbon.
+
+## Future Improvements
+
+- Add additional BIM QA/QC checks
+- Support custom user-defined QA rules
+- Integrate Autodesk Construction Cloud (ACC)
+- Integrate Autodesk Platform Services (APS)
+- Add AI-assisted model quality recommendations
+- Export reports to Microsoft Excel
+- Add charts and analytics dashboard
+- Improve report customization
+
+  ## Author
+
+**Suyash Thakar**
+
+Civil Engineer | BIM Automation Developer
+
+- LinkedIn: www.linkedin.com/in/suyash-thakar-18549a2a8
+
