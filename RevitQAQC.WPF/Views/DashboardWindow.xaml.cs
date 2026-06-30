@@ -12,6 +12,7 @@ using RevitQAQC.Shared.Models;
 using RevitQAQC.WPF.ViewModels;
 using Microsoft.Win32;
 using RevitQAQC.Engine.Reports;
+using System.ComponentModel;
 
 namespace RevitQAQC.WPF.Views
 {
@@ -20,12 +21,32 @@ namespace RevitQAQC.WPF.Views
     /// </summary>
     public partial class DashboardWindow : Window
     {
+        private ICollectionView _resultsView;
         private readonly ReportModel _report;
         public DashboardWindow(ReportModel report)
         {
             InitializeComponent();
-            _report = report;
-            DataContext = new DashboardViewModel(report);
+
+            try
+            {
+                _report = report;
+
+                DashboardViewModel viewModel = new DashboardViewModel(report);
+
+                DataContext = viewModel;
+
+                _resultsView = CollectionViewSource.GetDefaultView(viewModel.Report.CheckResults);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Failed to initialize dashboard.\n\nReason:\n{ex.Message}",
+                    "Initialization Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+
+                Close();
+            }
         }
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
@@ -41,15 +62,26 @@ namespace RevitQAQC.WPF.Views
 
             if (dialog.ShowDialog() == true)
             {
-                PdfReportGenerator generator = new PdfReportGenerator();
+                try
+                {
+                    PdfReportGenerator generator = new PdfReportGenerator();
 
-                generator.Generate(_report, dialog.FileName);
+                    generator.Generate(_report, dialog.FileName);
 
-                MessageBox.Show(
-                    "PDF exported successfully.",
-                    "Success",
+                    MessageBox.Show(
+                        "PDF exported successfully.",
+                        "Success",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                    $"Unable to export the PDF.\n\nReason:\n{ex.Message}",
+                    "PDF Export Failed",
                     MessageBoxButton.OK,
-                    MessageBoxImage.Information);
+                    MessageBoxImage.Error);
+                }
             }
         }
 
@@ -62,17 +94,86 @@ namespace RevitQAQC.WPF.Views
 
             if (dialog.ShowDialog() == true)
             {
-                JsonReportGenerator generator = new JsonReportGenerator();
+                try
+                {
+                    JsonReportGenerator generator = new JsonReportGenerator();
 
-                generator.GenerateReport(_report, dialog.FileName);
+                    generator.GenerateReport(_report, dialog.FileName);
 
-                MessageBox.Show(
-                    "JSON exported successfully.",
-                    "Success",
+                    MessageBox.Show(
+                        "JSON exported successfully.",
+                        "Success",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Unable to export the JSON file.\n\nReason:\n{ex.Message}",
+                    "JSON Export Failed",
                     MessageBoxButton.OK,
-                    MessageBoxImage.Information);
+                    MessageBoxImage.Error);
+                }
             }
         }
+        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (_resultsView == null)
+                return;
 
+            string searchText = SearchBox.Text.Trim().ToLower();
+
+            _resultsView.Filter = item =>
+            {
+                if (item is CheckResult result)
+                {
+                    if (string.IsNullOrEmpty(searchText))
+                        return true;
+
+                    return result.CheckName.ToLower().Contains(searchText)
+                        || result.Message.ToLower().Contains(searchText);
+                }
+
+                return false;
+            };
+
+            ApplyFilters();
+        }
+
+        private void StatusFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ApplyFilters();
+        }
+
+        private void ApplyFilters()
+        {
+            if (_resultsView == null)
+                return;
+
+            string searchText = SearchBox.Text.Trim().ToLower();
+
+            string status = (StatusFilter.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "All";
+
+            _resultsView.Filter = item =>
+            {
+                if (item is not CheckResult result)
+                    return false;
+
+                bool matchesSearch =
+                string.IsNullOrWhiteSpace(searchText) ||
+                (result.CheckName?.ToLower().Contains(searchText) ?? false) ||
+                (result.Message?.ToLower().Contains(searchText) ?? false);
+
+                bool matchesStatus = status switch
+                {
+                    "Pass" => result.IsPass,
+                    "Fail" => !result.IsPass,
+                    _ => true
+                };
+
+                return matchesSearch && matchesStatus;
+            };
+
+            _resultsView.Refresh();
+        }
     }
 }

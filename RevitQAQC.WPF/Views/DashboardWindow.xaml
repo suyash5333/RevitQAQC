@@ -6,31 +6,95 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="Revit QAQC Dashboard"
-        Height="720"
-        Width="1100"
+        Height="760"
+        Width="1140"
         WindowStartupLocation="CenterScreen"
-        Background="#F4F6F9">
-    
+        Background="#EEF1F6"
+        FontFamily="Segoe UI">
+
     <Window.Resources>
 
-        <converters:BooleanToStatusConverter
-        x:Key="StatusConverter"/>
-        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+        <converters:BooleanToStatusConverter x:Key="StatusConverter"/>
+        <converters:BooleanToStatusBrushConverter x:Key="StatusBrushConverter"/>
+        <converters:HealthScoreToBrushConverter x:Key="HealthBrushConverter"/>
 
+        <!-- Card container style -->
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="BorderBrush" Value="#E5E8EE"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#000000" Opacity="0.06" BlurRadius="14" ShadowDepth="2" Direction="270"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CardLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#8A93A3"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            
+        </Style>
+
+        <!-- Primary button -->
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Height" Value="42"/>
-            <Setter Property="Width" Value="140"/>
+            <Setter Property="Width" Value="150"/>
             <Setter Property="Background" Value="#2563EB"/>
             <Setter Property="BorderBrush" Value="#2563EB"/>
             <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1" CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.88"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.75"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
+        <!-- DataGrid row hover -->
+        <Style TargetType="DataGridRow">
+            <Setter Property="Background" Value="Transparent"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F1F5FB"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#F8FAFC"/>
+            <Setter Property="Foreground" Value="#6B7280"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="10,0,0,0"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="BorderBrush" Value="#E5E8EE"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
         </Style>
 
     </Window.Resources>
 
-    <Grid Margin="20">
+    <Grid Margin="24">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -41,19 +105,19 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-
-        <TextBlock
-            Grid.Row="0"
-            Text="Revit QAQC Dashboard"
-            FontSize="30"
-            FontWeight="Bold"
-            Foreground="#2C3E50"
-            Margin="0,0,0,20"/>
+        <StackPanel Grid.Row="0" Margin="0,0,0,22">
+            <TextBlock Text="Revit QAQC Dashboard"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Foreground="#1F2937"/>
+            <TextBlock Text="Automated model quality and standards report"
+                       FontSize="13"
+                       Foreground="#8A93A3"
+                       Margin="0,4,0,0"/>
+        </StackPanel>
 
         <!-- Cards -->
-
-        <Grid Grid.Row="1"
-              Margin="0,0,0,20">
+        <Grid Grid.Row="1" Margin="0,0,0,20">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -61,222 +125,182 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            
+
             <!-- Project Card -->
-
-            <Border Grid.Column="0"
-                    Margin="0,0,15,0"
-                    Background="White"
-                    CornerRadius="8"
-                    BorderBrush="#DDDDDD"
-                    BorderThickness="1"
-                    Padding="15">
-
-                <StackPanel>
-
-                    <TextBlock
-                        Text="PROJECT"
-                        Foreground="Gray"
-                        FontWeight="Bold"/>
-
-                    <TextBlock
-                        Margin="0,8,0,0"
-                        FontSize="18"
-                        FontWeight="Bold"
-                        Text="{Binding Report.ProjectName}"/>
-
+            <Border Grid.Column="0" Margin="0,0,12,0" Style="{StaticResource CardStyle}">
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="Project" Style="{StaticResource CardLabelStyle}" HorizontalAlignment="Left"/>
+                    <TextBlock Margin="0,10,0,0"
+                               FontSize="19"
+                               FontWeight="Bold"
+                               Foreground="#1F2937"
+                               TextWrapping="Wrap"
+                               Text="{Binding Report.ProjectName}"/>
                 </StackPanel>
-
             </Border>
 
             <!-- Health Score -->
-
-            <Border Grid.Column="1"
-              Margin="0,0,15,0"
-              Background="White"
-              CornerRadius="10"
-              BorderBrush="#E5E7EB"
-              BorderThickness="1"
-              Padding="20">
-
-                <StackPanel
-                  HorizontalAlignment="Center">
-
-                    <TextBlock
-                  Text="MODEL HEALTH"
-                  FontSize="14"
-                  FontWeight="SemiBold"
-                  Foreground="#6B7280"
-                  HorizontalAlignment="Center"/>
-
-                    <TextBlock
-                    Margin="0,12,0,0"
-                    Text="{Binding Report.HealthScore.Score,StringFormat={}{0:F2}%}"
-                    FontSize="48"
-                    FontWeight="Bold"
-                    Foreground="#22C55E"
-                    HorizontalAlignment="Center"/>
-
-                    <TextBlock
-                     Margin="0,5,0,10"
-                     Text="{Binding Report.HealthScore.Grade}"
-                     FontSize="20"
-                     FontWeight="SemiBold"
-                     Foreground="#374151"
-                      HorizontalAlignment="Center"/>
-
-                    <ProgressBar
-                     Width="220"
-                     Height="12"
-                     Maximum="100"
-                      Value="{Binding Report.HealthScore.Score}"/>
-
+            <Border Grid.Column="1" Margin="0,0,12,0" Style="{StaticResource CardStyle}">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="Model Health" Style="{StaticResource CardLabelStyle}"/>
+                    <TextBlock Margin="0,10,0,0"
+                               Text="{Binding Report.HealthScore.Score, StringFormat={}{0:F1}%}"
+                               FontSize="44"
+                               FontWeight="Bold"
+                               Foreground="{Binding Report.HealthScore.Score, Converter={StaticResource HealthBrushConverter}}"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Margin="0,2,0,12"
+                               Text="{Binding Report.HealthScore.Grade}"
+                               FontSize="15"
+                               FontWeight="SemiBold"
+                               Foreground="#6B7280"
+                               HorizontalAlignment="Center"/>
+                    <ProgressBar Width="200" Height="8" Maximum="100"
+                                 Value="{Binding Report.HealthScore.Score}"
+                                 Foreground="{Binding Report.HealthScore.Score, Converter={StaticResource HealthBrushConverter}}"
+                                 Background="#EEF1F6"
+                                 BorderThickness="0"/>
                 </StackPanel>
-
             </Border>
 
-            <!-- Checks -->
-
-            <Border Grid.Column="2"
-                    Background="White"
-                    CornerRadius="8"
-                    BorderBrush="#DDDDDD"
-                    BorderThickness="1"
-                    Padding="15">
-
-                <StackPanel>
-
-                    <TextBlock
-                        Text="TOTAL CHECKS"
-                        Foreground="Gray"
-                        FontWeight="Bold"/>
-
-                    <TextBlock
-                        FontSize="38"
-                        FontWeight="Bold"
-                        Text="{Binding Report.CheckResults.Count}"/>
-
+            <!-- Total Checks -->
+            <Border Grid.Column="2" Margin="0,0,12,0" Style="{StaticResource CardStyle}">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="Total Checks" Style="{StaticResource CardLabelStyle}"/>
+                    <TextBlock Margin="0,10,0,0"
+                               FontSize="40"
+                               FontWeight="Bold"
+                               Foreground="#1F2937"
+                               HorizontalAlignment="Center"
+                               Text="{Binding Report.CheckResults.Count}"/>
                 </StackPanel>
-
             </Border>
 
             <!-- Failed Checks -->
-
-            <Border Grid.Column="3"
-                 Margin="15,0,0,0"
-                Background="White"
-                CornerRadius="10"
-                BorderBrush="#E5E7EB"
-                BorderThickness="1"
-                Padding="20">
-
+            <Border Grid.Column="3" Style="{StaticResource CardStyle}">
                 <StackPanel HorizontalAlignment="Center">
-
-                    <TextBlock
-                        Text="FAILED CHECKS"
-                        FontSize="14"
-                        FontWeight="SemiBold"
-                        Foreground="#6B7280"
-                        HorizontalAlignment="Center"/>
-
-                    <TextBlock
-                        x:Name="FailedChecksText"
-                        Margin="0,12,0,0"
-                        Text="{Binding FailedChecks}"
-                        FontSize="42"
-                        FontWeight="Bold"
-                        Foreground="#DC2626"
-                        HorizontalAlignment="Center"/>
-
+                    <TextBlock Text="Failed Checks" Style="{StaticResource CardLabelStyle}"/>
+                    <TextBlock x:Name="FailedChecksText"
+                               Margin="0,10,0,0"
+                               Text="{Binding FailedChecks}"
+                               FontSize="40"
+                               FontWeight="Bold"
+                               Foreground="#DC2626"
+                               HorizontalAlignment="Center"/>
                 </StackPanel>
-
             </Border>
 
         </Grid>
 
         <!-- Results -->
+        <Border Grid.Row="3" Style="{StaticResource CardStyle}">
 
-        <Border Grid.Row="3"
-                Background="White"
-                CornerRadius="8"
-                BorderBrush="#DDDDDD"
-                BorderThickness="1"
-                Padding="10">
+            <DockPanel>
 
-            <DataGrid
-                AutoGenerateColumns="False"
-                 CanUserAddRows="False"
-                CanUserDeleteRows="False"
-                IsReadOnly="True"
-                HeadersVisibility="Column"
-                GridLinesVisibility="Horizontal"
-                RowHeight="38"
-                ColumnHeaderHeight="42"
-                AlternatingRowBackground="#F8FAFC"
-                Background="White"
-                BorderThickness="0"
-                FontSize="13"
-                ItemsSource="{Binding Report.CheckResults}">
+                <StackPanel DockPanel.Dock="Top"
+                    Orientation="Horizontal"
+                    Margin="10">
 
-                <DataGrid.Columns>
+                    <TextBox x:Name="SearchBox"
+                         Width="300"
+                         Height="35"
+                         Margin="0,0,10,0"
+                         VerticalContentAlignment="Center"
+                         FontSize="14"
+                         TextChanged="SearchBox_TextChanged"
+                         ToolTip="Search by Check Name or Message"/>
+                    <ComboBox x:Name="StatusFilter"
+                          Width="120"
+                          Height="35"
+                          SelectionChanged="StatusFilter_SelectionChanged"> 
 
-                    <DataGridTextColumn
-                        Header="Check Name"
-                        Width="250"
-                        Binding="{Binding CheckName}"/>
+                        <ComboBoxItem Content="All" IsSelected="True"/>
+                        <ComboBoxItem Content="Pass"/>
+                        <ComboBoxItem Content="Fail"/>
 
-                    <DataGridTextColumn
-                        Header="Issues"
-                        Width="90"
-                        Binding="{Binding IssueCount}"/>
+                    </ComboBox>
 
-                    <DataGridTextColumn
-                        Header="Status"
-                        Width="100"
-                        Binding="{Binding IsPass,
-                      Converter={StaticResource StatusConverter}}"/> 
-                    
-                    <DataGridTextColumn
-                        Header="Message"
-                        Width="*"
-                        Binding="{Binding Message}"/>
+                </StackPanel>
+
+                <DataGrid
+                    AutoGenerateColumns="False"
+                    CanUserAddRows="False"
+                    CanUserDeleteRows="False"
+                    IsReadOnly="True"
+                    HeadersVisibility="Column"
+                    GridLinesVisibility="Horizontal"
+                    HorizontalGridLinesBrush="#EEF1F6"
+                    RowHeight="42"
+                    ColumnHeaderHeight="40"
+                    AlternatingRowBackground="#FAFBFD"
+                    Background="White"
+                    BorderThickness="0"
+                    FontSize="13"
+                    Foreground="#374151"
+                    RowBackground="White"
+                    Margin="10"
+                    ItemsSource="{Binding Report.CheckResults}">
+
+                    <DataGrid.Columns>
+
+                    <DataGridTextColumn Header="Check Name" Width="240" Binding="{Binding CheckName}"/>
+
+                    <DataGridTextColumn Header="Issues" Width="80" Binding="{Binding IssueCount}"/>
+
+                    <DataGridTemplateColumn Header="Status" Width="110">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border CornerRadius="10"
+                                        Padding="10,3"
+                                        HorizontalAlignment="Left"
+                                        Background="{Binding IsPass, Converter={StaticResource StatusBrushConverter}}">
+                                    <TextBlock Text="{Binding IsPass, Converter={StaticResource StatusConverter}}"
+                                               FontWeight="SemiBold"
+                                               FontSize="12"
+                                               Foreground="White"/>
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTextColumn Header="Message" Width="*" Binding="{Binding Message}"/>
 
                 </DataGrid.Columns>
 
             </DataGrid>
 
+            </DockPanel>
+
         </Border>
 
         <!-- Buttons -->
-
-        <!-- Buttons -->
-
         <StackPanel Grid.Row="4"
-            Orientation="Horizontal"
-            HorizontalAlignment="Right"
-            Margin="0,20,0,0">
-            <Button
-            x:Name="ExportPdfButton"
-            Style="{StaticResource PrimaryButtonStyle}"
-            Margin="0,0,10,0"
-            Content="Export PDF"
-            Click="ExportPdfButton_Click"/>
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0,20,0,0">
 
-            <Button
-            x:Name="ExportJsonButton"
-            Style="{StaticResource PrimaryButtonStyle}"
-            Margin="0,0,10,0"
-            Content="Export JSON"
-            Click="ExportJsonButton_Click"/>    
+            <Button x:Name="ExportPdfButton"
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    Margin="0,0,10,0"
+                    Content="Export PDF"
+                    Click="ExportPdfButton_Click"/>
 
-            <Button
-            x:Name="CloseButton"
-            Style="{StaticResource PrimaryButtonStyle}"
-            Background="#DC2626"
-            BorderBrush="#DC2626"
-            Content="Close"
-            Click="CloseButton_Click"/>
+            <Button x:Name="ExportJsonButton"
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    Background="#10B981"
+                    BorderBrush="#10B981"
+                    Margin="0,0,10,0"
+                    Content="Export JSON"
+                    Click="ExportJsonButton_Click"/>
+
+            <Button x:Name="CloseButton"
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    Background="#DC2626"
+                    BorderBrush="#DC2626"
+                    Content="Close"
+                    Click="CloseButton_Click"/>
         </StackPanel>
+
     </Grid>
 
 </Window>
