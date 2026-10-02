@@ -1,14 +1,17 @@
-﻿namespace RevitQAQC.Shared.Models;
-
-public class CheckResult
+﻿namespace RevitQAQC.Shared.Models
 {
-    public string CheckName { get; set; } = "";
+    public class CheckResult
+    {
+        public string CheckName { get; set; } = "";
 
-    public bool IsPass { get; set; }
+        public bool IsPass { get; set; }
 
-    public string Message { get; set; } = "";
+        public string Message { get; set; } = "";
 
-    public int IssueCount { get; set; }
+        public int IssueCount { get; set; }
 
-    public int value { get; set; }
+        public int value { get; set; }
+
+        public List<QAIssue> Issues { get; set; } = new();
+    }
 }

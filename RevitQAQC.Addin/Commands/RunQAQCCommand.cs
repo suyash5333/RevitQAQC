@@ -1,15 +1,17 @@
 ﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+
 using RevitQAQC.Core.Checks;
+using RevitQAQC.Core.Services;
 using RevitQAQC.Engine.Processors;
 using RevitQAQC.Engine.Reports;
 using RevitQAQC.Engine.Services;
 using RevitQAQC.Interfaces.Checks;
 using RevitQAQC.Shared.Models;
-using System.Collections.Generic;
-using RevitQAQC.Shared.Models;
 using RevitQAQC.WPF.Views;
+
+using System.Collections.Generic;
 
 namespace RevitQAQC.Addin.Commands
 {
@@ -21,17 +23,19 @@ namespace RevitQAQC.Addin.Commands
             ref string message,
             ElementSet elements)
         {
-            Document doc =commandData.Application.ActiveUIDocument.Document;
+            Document doc =
+                commandData.Application.ActiveUIDocument.Document;
 
             var checks = new List<IQACheck>()
-             {
-             new MissingMarkParameterCheck(),
-             new MissingCommentsCheck(),
-             new ElementCountCheck(),
-             new DuplicateMarkValueCheck(),
-             new WrongLevelAssignmentCheck(),
-             new ModelStandardsCheck()
-             };
+            {
+                new MissingMarkParameterCheck(),
+                new MissingCommentsCheck(),
+                new ElementCountCheck(),
+                new DuplicateMarkValueCheck(),
+                new WrongLevelAssignmentCheck(),
+                new ModelStandardsCheck(),
+                new NamingConventionCheck()
+            };
 
             var engine = new QAEngine(checks);
 
@@ -58,9 +62,23 @@ namespace RevitQAQC.Addin.Commands
                 report,
                 @"C:\Temp\QAQC_Report.pdf");
 
-            DashboardWindow dashboard = new DashboardWindow(report);
+            // =====================================================
+            // CREATE SELECTION SERVICE WHILE INSIDE REVIT
+            // =====================================================
 
-            dashboard.ShowDialog();
+            ElementSelectionService selectionService =
+                new ElementSelectionService();
+
+            // =====================================================
+            // OPEN DASHBOARD
+            // =====================================================
+
+            DashboardWindow dashboard =
+                new DashboardWindow(
+                    report,
+                    selectionService);
+
+            dashboard.Show();
 
             return Result.Succeeded;
         }

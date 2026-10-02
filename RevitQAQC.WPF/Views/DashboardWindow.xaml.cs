@@ -1,29 +1,29 @@
-﻿using System.Text;
+﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
+using Microsoft.Win32;
+
+using RevitQAQC.Core.Services;
+using RevitQAQC.Engine.Reports;
 using RevitQAQC.Shared.Models;
 using RevitQAQC.WPF.ViewModels;
-using Microsoft.Win32;
-using RevitQAQC.Engine.Reports;
-using System.ComponentModel;
 
 namespace RevitQAQC.WPF.Views
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class DashboardWindow : Window
     {
         private ICollectionView _resultsView;
         private readonly ReportModel _report;
-        public DashboardWindow(ReportModel report)
+
+        private readonly ElementSelectionService _selectionService;
+
+        public DashboardWindow(
+            ReportModel report,
+            ElementSelectionService selectionService)
         {
             InitializeComponent();
 
@@ -31,11 +31,16 @@ namespace RevitQAQC.WPF.Views
             {
                 _report = report;
 
-                DashboardViewModel viewModel = new DashboardViewModel(report);
+                _selectionService = selectionService;
+
+                DashboardViewModel viewModel =
+                    new DashboardViewModel(report);
 
                 DataContext = viewModel;
 
-                _resultsView = CollectionViewSource.GetDefaultView(viewModel.Report.CheckResults);
+                _resultsView =
+                    CollectionViewSource.GetDefaultView(
+                        viewModel.Report.CheckResults);
             }
             catch (Exception ex)
             {
@@ -48,12 +53,17 @@ namespace RevitQAQC.WPF.Views
                 Close();
             }
         }
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
+
+        private void CloseButton_Click(
+            object sender,
+            RoutedEventArgs e)
         {
             Close();
         }
 
-        private void ExportPdfButton_Click(object sender, RoutedEventArgs e)
+        private void ExportPdfButton_Click(
+            object sender,
+            RoutedEventArgs e)
         {
             SaveFileDialog dialog = new SaveFileDialog();
 
@@ -64,9 +74,12 @@ namespace RevitQAQC.WPF.Views
             {
                 try
                 {
-                    PdfReportGenerator generator = new PdfReportGenerator();
+                    PdfReportGenerator generator =
+                        new PdfReportGenerator();
 
-                    generator.Generate(_report, dialog.FileName);
+                    generator.Generate(
+                        _report,
+                        dialog.FileName);
 
                     MessageBox.Show(
                         "PDF exported successfully.",
@@ -77,15 +90,17 @@ namespace RevitQAQC.WPF.Views
                 catch (Exception ex)
                 {
                     MessageBox.Show(
-                    $"Unable to export the PDF.\n\nReason:\n{ex.Message}",
-                    "PDF Export Failed",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                        $"Unable to export the PDF.\n\nReason:\n{ex.Message}",
+                        "PDF Export Failed",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                 }
             }
         }
 
-        private void ExportJsonButton_Click(object sender, RoutedEventArgs e)
+        private void ExportJsonButton_Click(
+            object sender,
+            RoutedEventArgs e)
         {
             SaveFileDialog dialog = new SaveFileDialog();
 
@@ -96,9 +111,12 @@ namespace RevitQAQC.WPF.Views
             {
                 try
                 {
-                    JsonReportGenerator generator = new JsonReportGenerator();
+                    JsonReportGenerator generator =
+                        new JsonReportGenerator();
 
-                    generator.GenerateReport(_report, dialog.FileName);
+                    generator.GenerateReport(
+                        _report,
+                        dialog.FileName);
 
                     MessageBox.Show(
                         "JSON exported successfully.",
@@ -108,38 +126,28 @@ namespace RevitQAQC.WPF.Views
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Unable to export the JSON file.\n\nReason:\n{ex.Message}",
-                    "JSON Export Failed",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                    MessageBox.Show(
+                        $"Unable to export the JSON file.\n\nReason:\n{ex.Message}",
+                        "JSON Export Failed",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                 }
             }
         }
-        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+
+        private void SearchBox_TextChanged(
+            object sender,
+            TextChangedEventArgs e)
         {
             if (_resultsView == null)
                 return;
 
-            string searchText = SearchBox.Text.Trim().ToLower();
-
-            _resultsView.Filter = item =>
-            {
-                if (item is CheckResult result)
-                {
-                    if (string.IsNullOrEmpty(searchText))
-                        return true;
-
-                    return result.CheckName.ToLower().Contains(searchText)
-                        || result.Message.ToLower().Contains(searchText);
-                }
-
-                return false;
-            };
-
             ApplyFilters();
         }
 
-        private void StatusFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void StatusFilter_SelectionChanged(
+            object sender,
+            SelectionChangedEventArgs e)
         {
             ApplyFilters();
         }
@@ -149,9 +157,12 @@ namespace RevitQAQC.WPF.Views
             if (_resultsView == null)
                 return;
 
-            string searchText = SearchBox.Text.Trim().ToLower();
+            string searchText =
+                SearchBox.Text.Trim().ToLower();
 
-            string status = (StatusFilter.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "All";
+            string status =
+                (StatusFilter.SelectedItem as ComboBoxItem)
+                ?.Content?.ToString() ?? "All";
 
             _resultsView.Filter = item =>
             {
@@ -159,9 +170,11 @@ namespace RevitQAQC.WPF.Views
                     return false;
 
                 bool matchesSearch =
-                string.IsNullOrWhiteSpace(searchText) ||
-                (result.CheckName?.ToLower().Contains(searchText) ?? false) ||
-                (result.Message?.ToLower().Contains(searchText) ?? false);
+                    string.IsNullOrWhiteSpace(searchText) ||
+                    (result.CheckName?.ToLower()
+                        .Contains(searchText) ?? false) ||
+                    (result.Message?.ToLower()
+                        .Contains(searchText) ?? false);
 
                 bool matchesStatus = status switch
                 {
@@ -174,6 +187,37 @@ namespace RevitQAQC.WPF.Views
             };
 
             _resultsView.Refresh();
+        }
+
+        private void ChecksDataGrid_MouseDoubleClick(
+            object sender,
+            MouseButtonEventArgs e)
+        {
+            if (ChecksDataGrid.SelectedItem is not CheckResult result)
+                return;
+
+            if (result.CheckName != "Naming Convention Check")
+                return;
+
+            if (result.Issues == null || result.Issues.Count == 0)
+            {
+                MessageBox.Show(
+                    "There are no naming convention issues.",
+                    "Naming Convention Check",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+
+                return;
+            }
+
+            NamingIssuesWindow window =
+                new NamingIssuesWindow(
+                    result.Issues,
+                    _selectionService);
+
+            window.Owner = this;
+
+            window.ShowDialog();
         }
     }
 }

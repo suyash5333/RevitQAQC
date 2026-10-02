@@ -1,7 +1,7 @@
 ﻿using Autodesk.Revit.DB;
 using RevitQAQC.Interfaces.Checks;
-using System.Collections.Generic;
 using RevitQAQC.Shared.Models;
+using System.Collections.Generic;
 
 namespace RevitQAQC.Core.Checks
 {
@@ -18,7 +18,7 @@ namespace RevitQAQC.Core.Checks
                 .ToElements();
 
             var usedMarks = new HashSet<string>();
-            int duplicateCount = 0;
+            var issues = new List<QAIssue>();
 
             foreach (var element in elements)
             {
@@ -34,7 +34,15 @@ namespace RevitQAQC.Core.Checks
 
                 if (usedMarks.Contains(markValue))
                 {
-                    duplicateCount++;
+                    issues.Add(new QAIssue
+                    {
+                        ElementId = element.Id.Value,
+                        Category = element.Category?.Name ?? "Unknown",
+                        CurrentValue = markValue,
+                        Problem = "Duplicate Mark value",
+                        SuggestedValue = markValue,
+                        Severity = "Major"
+                    });
                 }
                 else
                 {
@@ -45,11 +53,12 @@ namespace RevitQAQC.Core.Checks
             return new CheckResult
             {
                 CheckName = CheckName,
-                IsPass = duplicateCount == 0,
-                Message = duplicateCount == 0
+                IsPass = issues.Count == 0,
+                Message = issues.Count == 0
                     ? "No duplicate Mark values found."
-                    : $"{duplicateCount} duplicate Mark values found.",
-                IssueCount = duplicateCount
+                    : $"{issues.Count} duplicate Mark values found.",
+                IssueCount = issues.Count,
+                Issues = issues
             };
         }
     }
