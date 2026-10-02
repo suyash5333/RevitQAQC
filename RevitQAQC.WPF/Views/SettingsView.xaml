@@ -1,0 +1,140 @@
+﻿<UserControl x:Class="RevitQAQC.WPF.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#F4F6F9">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="30">
+
+            <TextBlock Text="Settings"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Foreground="#1F2937"/>
+
+            <TextBlock Text="Configure QA/QC standards and application behavior."
+                       FontSize="14"
+                       Foreground="#6B7280"
+                       Margin="0,5,0,25"/>
+
+            <!-- Naming Convention -->
+            <Border Background="White"
+                    CornerRadius="10"
+                    Padding="20"
+                    Margin="0,0,0,15">
+
+                <StackPanel>
+
+                    <TextBlock Text="Naming Convention Standards"
+                               FontSize="18"
+                               FontWeight="SemiBold"/>
+
+                    <TextBlock Text="Configure naming rules used by the Naming Convention check."
+                               Foreground="#6B7280"
+                               Margin="0,5,0,15"/>
+
+                    <TextBlock Text="Example Rule"
+                               FontWeight="SemiBold"/>
+
+                    <TextBox Text="ELEMENT_DISCIPLINE_LEVEL_NUMBER"
+                             Height="35"
+                             Margin="0,5,0,0"/>
+
+                </StackPanel>
+
+            </Border>
+
+            <!-- Severity -->
+            <Border Background="White"
+                    CornerRadius="10"
+                    Padding="20"
+                    Margin="0,0,0,15">
+
+                <StackPanel>
+
+                    <TextBlock Text="Severity Configuration"
+                               FontSize="18"
+                               FontWeight="SemiBold"/>
+
+                    <TextBlock Text="Define how QA/QC issues are classified."
+                               Foreground="#6B7280"
+                               Margin="0,5,0,15"/>
+
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="200"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Critical"
+                                       FontWeight="SemiBold"/>
+                            <ComboBox Margin="0,5,15,0"
+                                      Height="32">
+                                <ComboBoxItem Content="Critical"/>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Major"
+                                       FontWeight="SemiBold"/>
+                            <ComboBox Margin="0,5,0,0"
+                                      Height="32">
+                                <ComboBoxItem Content="Major"/>
+                            </ComboBox>
+                        </StackPanel>
+
+                    </Grid>
+
+                </StackPanel>
+
+            </Border>
+
+            <!-- QA Standards -->
+            <Border Background="White"
+                    CornerRadius="10"
+                    Padding="20"
+                    Margin="0,0,0,20">
+
+                <StackPanel>
+
+                    <TextBlock Text="QA/QC Standards"
+                               FontSize="18"
+                               FontWeight="SemiBold"/>
+
+                    <TextBlock Text="Select the standards applied during model validation."
+                               Foreground="#6B7280"
+                               Margin="0,5,0,15"/>
+
+                    <CheckBox Content="Model Naming Standards"
+                              IsChecked="True"
+                              Margin="0,5"/>
+
+                    <CheckBox Content="Parameter Standards"
+                              IsChecked="True"
+                              Margin="0,5"/>
+
+                    <CheckBox Content="Level Assignment Standards"
+                              IsChecked="True"
+                              Margin="0,5"/>
+
+                    <CheckBox Content="Model Structure Standards"
+                              IsChecked="True"
+                              Margin="0,5"/>
+
+                </StackPanel>
+
+            </Border>
+
+            <Button Content="Save Settings"
+                    Width="150"
+                    Height="40"
+                    HorizontalAlignment="Left"
+                    Background="#2563EB"
+                    Foreground="White"
+                    FontWeight="SemiBold"/>
+
+        </StackPanel>
+    </ScrollViewer>
+
+</UserControl>

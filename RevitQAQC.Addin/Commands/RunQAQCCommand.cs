@@ -72,13 +72,9 @@ namespace RevitQAQC.Addin.Commands
             ElementRemediationService remediationService =
                 new ElementRemediationService();
 
-            DashboardWindow dashboard =
-                new DashboardWindow(
-                    report,
-                    selectionService,
-                    remediationService);
+            MainWindow mainWindow = new MainWindow(report);
 
-            dashboard.Show();
+            mainWindow.ShowDialog();
 
             return Result.Succeeded;
         }

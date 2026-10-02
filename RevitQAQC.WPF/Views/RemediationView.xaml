@@ -1,0 +1,177 @@
+﻿<UserControl x:Class="RevitQAQC.WPF.Views.RemediationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#F4F6F9">
+
+    <Grid Margin="30">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- HEADER -->
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="Remediation"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Foreground="#17202A"/>
+
+            <TextBlock Text="Review, preview and apply fixes to model issues"
+                       FontSize="13"
+                       Foreground="#7F8C8D"
+                       Margin="0,5,0,25"/>
+        </StackPanel>
+
+        <!-- ACTION BAR -->
+        <Border Grid.Row="1"
+                Background="White"
+                CornerRadius="10"
+                Padding="15"
+                Margin="0,0,0,20">
+
+            <StackPanel Orientation="Horizontal">
+
+                <Button Content="Preview Fix"
+                        Width="120"
+                        Height="38"
+                        Margin="0,0,10,0"/>
+
+                <Button Content="Select in Revit"
+                        Width="130"
+                        Height="38"
+                        Margin="0,0,10,0"/>
+
+                <Button Content="Fix Selected"
+                        Width="120"
+                        Height="38"
+                        Margin="0,0,10,0"/>
+
+                <Button Content="Fix All"
+                        Width="100"
+                        Height="38"
+                        Margin="0,0,10,0"/>
+
+                <Button Content="Re-scan"
+                        Width="100"
+                        Height="38"/>
+
+            </StackPanel>
+
+        </Border>
+
+        <!-- CONTENT -->
+        <Grid Grid.Row="2">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ISSUE LIST -->
+            <Border Grid.Column="0"
+                    Background="White"
+                    CornerRadius="12"
+                    Padding="15"
+                    Margin="0,0,15,0"
+                    BorderBrush="#E5E8EE"
+                    BorderThickness="1">
+
+                <StackPanel>
+
+                    <TextBlock Text="Issues Requiring Remediation"
+                               FontSize="17"
+                               FontWeight="SemiBold"
+                               Foreground="#17202A"
+                               Margin="5,5,5,15"/>
+
+                    <DataGrid AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              IsReadOnly="True"
+                              HeadersVisibility="Column"
+                              RowHeight="42"
+                              Background="White"
+                              BorderThickness="0">
+
+                        <DataGrid.Columns>
+
+                            <DataGridTextColumn Header="Element ID"
+                                                Width="110"/>
+
+                            <DataGridTextColumn Header="Issue"
+                                                Width="180"/>
+
+                            <DataGridTextColumn Header="Current"
+                                                Width="150"/>
+
+                            <DataGridTextColumn Header="Expected"
+                                                Width="150"/>
+
+                            <DataGridTextColumn Header="Status"
+                                                Width="*"/>
+
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+
+                </StackPanel>
+
+            </Border>
+
+            <!-- DETAILS -->
+            <Border Grid.Column="1"
+                    Background="White"
+                    CornerRadius="12"
+                    Padding="20"
+                    BorderBrush="#E5E8EE"
+                    BorderThickness="1">
+
+                <StackPanel>
+
+                    <TextBlock Text="Fix Details"
+                               FontSize="17"
+                               FontWeight="SemiBold"
+                               Foreground="#17202A"/>
+
+                    <TextBlock Text="Select an issue to view remediation details."
+                               Foreground="#7F8C8D"
+                               TextWrapping="Wrap"
+                               Margin="0,10,0,25"/>
+
+                    <TextBlock Text="Selected Element"
+                               FontWeight="SemiBold"
+                               Foreground="#6B7280"/>
+
+                    <TextBlock Text="—"
+                               FontSize="22"
+                               FontWeight="Bold"
+                               Margin="0,5,0,20"/>
+
+                    <TextBlock Text="Recommended Action"
+                               FontWeight="SemiBold"
+                               Foreground="#6B7280"/>
+
+                    <TextBlock Text="—"
+                               TextWrapping="Wrap"
+                               Margin="0,5,0,20"/>
+
+                    <Border Background="#EFF6FF"
+                            CornerRadius="8"
+                            Padding="15">
+
+                        <TextBlock Text="Preview changes before applying them to the Revit model."
+                                   Foreground="#1D4ED8"
+                                   TextWrapping="Wrap"/>
+
+                    </Border>
+
+                </StackPanel>
+
+            </Border>
+
+        </Grid>
+
+    </Grid>
+
+</UserControl>
