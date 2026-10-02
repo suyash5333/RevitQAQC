@@ -67,16 +67,16 @@ namespace RevitQAQC.Addin.Commands
             // =====================================================
 
             ElementSelectionService selectionService =
-                new ElementSelectionService();
+            new ElementSelectionService();
 
-            // =====================================================
-            // OPEN DASHBOARD
-            // =====================================================
+            ElementRemediationService remediationService =
+                new ElementRemediationService();
 
             DashboardWindow dashboard =
                 new DashboardWindow(
                     report,
-                    selectionService);
+                    selectionService,
+                    remediationService);
 
             dashboard.Show();
 

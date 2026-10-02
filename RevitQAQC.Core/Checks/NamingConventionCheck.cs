@@ -95,6 +95,13 @@ namespace RevitQAQC.Core.Checks
                 if (issue != null)
                 {
                     issues.Add(issue);
+
+                    // Reserve the suggested value so that
+                    // the next issue receives a different value.
+                    if (!string.IsNullOrWhiteSpace(issue.SuggestedValue))
+                    {
+                        usedMarks.Add(issue.SuggestedValue);
+                    }
                 }
 
                 // Add the current Mark back

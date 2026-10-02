@@ -20,10 +20,13 @@ namespace RevitQAQC.WPF.Views
         private readonly ReportModel _report;
 
         private readonly ElementSelectionService _selectionService;
+        private readonly ElementRemediationService _remediationService;
+
 
         public DashboardWindow(
-            ReportModel report,
-            ElementSelectionService selectionService)
+        ReportModel report,
+        ElementSelectionService selectionService,
+        ElementRemediationService remediationService)
         {
             InitializeComponent();
 
@@ -32,6 +35,7 @@ namespace RevitQAQC.WPF.Views
                 _report = report;
 
                 _selectionService = selectionService;
+                _remediationService = remediationService;
 
                 DashboardViewModel viewModel =
                     new DashboardViewModel(report);
@@ -211,9 +215,10 @@ namespace RevitQAQC.WPF.Views
             }
 
             NamingIssuesWindow window =
-                new NamingIssuesWindow(
-                    result.Issues,
-                    _selectionService);
+            new NamingIssuesWindow(
+             result.Issues,
+             _selectionService,
+             _remediationService);
 
             window.Owner = this;
 
