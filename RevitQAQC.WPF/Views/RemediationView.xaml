@@ -36,26 +36,31 @@
                 <Button Content="Preview Fix"
                         Width="120"
                         Height="38"
-                        Margin="0,0,10,0"/>
-
+                        Margin="0,0,10,0"
+                        Click="PreviewFix_Click"/>
                 <Button Content="Select in Revit"
                         Width="130"
                         Height="38"
-                        Margin="0,0,10,0"/>
+                        Margin="0,0,10,0"
+                        Click="SelectInRevit_Click"/>
 
                 <Button Content="Fix Selected"
                         Width="120"
                         Height="38"
-                        Margin="0,0,10,0"/>
+                        Margin="0,0,10,0"
+                        Click="FixSelected_Click"/>
 
                 <Button Content="Fix All"
                         Width="100"
                         Height="38"
-                        Margin="0,0,10,0"/>
+                        Margin="0,0,10,0"
+                        Click="FixAll_Click"/>  
 
                 <Button Content="Re-scan"
+                        Click="Rescan_Click"
                         Width="100"
                         Height="38"/>
+                        
 
             </StackPanel>
 
@@ -71,51 +76,67 @@
 
             <!-- ISSUE LIST -->
             <Border Grid.Column="0"
-                    Background="White"
-                    CornerRadius="12"
-                    Padding="15"
-                    Margin="0,0,15,0"
-                    BorderBrush="#E5E8EE"
-                    BorderThickness="1">
+        Background="White"
+        CornerRadius="12"
+        Padding="15"
+        Margin="0,0,15,0"
+        BorderBrush="#E5E8EE"
+        BorderThickness="1">
 
-                <StackPanel>
+                <Grid>
 
-                    <TextBlock Text="Issues Requiring Remediation"
-                               FontSize="17"
-                               FontWeight="SemiBold"
-                               Foreground="#17202A"
-                               Margin="5,5,5,15"/>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-                    <DataGrid AutoGenerateColumns="False"
-                              CanUserAddRows="False"
-                              IsReadOnly="True"
-                              HeadersVisibility="Column"
-                              RowHeight="42"
-                              Background="White"
-                              BorderThickness="0">
+                    <TextBlock Grid.Row="0"
+                   Text="Issues Requiring Remediation"
+                   FontSize="17"
+                   FontWeight="SemiBold"
+                   Foreground="#17202A"
+                   Margin="5,5,5,15"/>
+
+                    <DataGrid Grid.Row="1"
+                  x:Name="RemediationDataGrid"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  HeadersVisibility="Column"
+                  RowHeight="42"
+                  Background="White"
+                  BorderThickness="0"
+                  SelectionChanged="RemediationDataGrid_SelectionChanged"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
 
                         <DataGrid.Columns>
 
                             <DataGridTextColumn Header="Element ID"
-                                                Width="110"/>
+                                    Binding="{Binding ElementId}"
+                                    Width="110"/>
 
                             <DataGridTextColumn Header="Issue"
-                                                Width="180"/>
+                                    Binding="{Binding Problem}"
+                                    Width="180"/>
 
                             <DataGridTextColumn Header="Current"
-                                                Width="150"/>
+                                    Binding="{Binding CurrentValue}"
+                                    Width="150"/>
 
                             <DataGridTextColumn Header="Expected"
-                                                Width="150"/>
+                                    Binding="{Binding SuggestedValue}"
+                                    Width="150"/>
 
-                            <DataGridTextColumn Header="Status"
-                                                Width="*"/>
+                            <DataGridTextColumn Header="Severity"
+                                    Binding="{Binding Severity}"
+                                    Width="100"/>
 
                         </DataGrid.Columns>
 
                     </DataGrid>
 
-                </StackPanel>
+                </Grid>
 
             </Border>
 
@@ -143,16 +164,18 @@
                                FontWeight="SemiBold"
                                Foreground="#6B7280"/>
 
-                    <TextBlock Text="—"
+                    <TextBlock x:Name="SelectedElementText"
+                               Text="—"
                                FontSize="22"
                                FontWeight="Bold"
-                               Margin="0,5,0,20"/>
+                               Margin="0,5,0,20"/>      
 
                     <TextBlock Text="Recommended Action"
                                FontWeight="SemiBold"
                                Foreground="#6B7280"/>
 
-                    <TextBlock Text="—"
+                    <TextBlock x:Name="RecommendedActionText"
+                               Text="—"
                                TextWrapping="Wrap"
                                Margin="0,5,0,20"/>
 

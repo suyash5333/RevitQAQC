@@ -10,6 +10,7 @@ using RevitQAQC.Engine.Services;
 using RevitQAQC.Interfaces.Checks;
 using RevitQAQC.Shared.Models;
 using RevitQAQC.WPF.Views;
+using RevitQAQC.Addin.Services;
 
 using System.Collections.Generic;
 
@@ -72,9 +73,16 @@ namespace RevitQAQC.Addin.Commands
             ElementRemediationService remediationService =
                 new ElementRemediationService();
 
-            MainWindow mainWindow = new MainWindow(report);
+            QAScanService scanService =
+                new QAScanService();
 
-            mainWindow.ShowDialog();
+            MainWindow mainWindow = new MainWindow(
+                report,
+                selectionService,
+                remediationService,
+                scanService);
+
+            mainWindow.Show();
 
             return Result.Succeeded;
         }

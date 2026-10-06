@@ -15,7 +15,7 @@ namespace RevitQAQC.WPF.Views
     public partial class DashboardView : UserControl
     {
         private ICollectionView _resultsView;
-        private readonly ReportModel _report;
+        private ReportModel _report;
 
         public DashboardView(ReportModel report)
         {
@@ -43,6 +43,22 @@ namespace RevitQAQC.WPF.Views
 
                 Window.GetWindow(this)?.Close();
             }
+        }
+
+        public void UpdateReport(ReportModel newReport)
+        {
+            _report = newReport;
+
+            DashboardViewModel viewModel =
+                new DashboardViewModel(_report);
+
+            DataContext = viewModel;
+
+            _resultsView =
+                CollectionViewSource.GetDefaultView(
+                    viewModel.Report.CheckResults);
+
+            ApplyFilters();
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)

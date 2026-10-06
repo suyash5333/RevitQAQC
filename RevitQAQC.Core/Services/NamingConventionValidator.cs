@@ -1,4 +1,7 @@
 ﻿using RevitQAQC.Shared.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace RevitQAQC.Core.Services
@@ -17,67 +20,71 @@ namespace RevitQAQC.Core.Services
             if (string.IsNullOrWhiteSpace(mark))
             {
                 string suggestedMark = GenerateNextMark(
-                    category,
                     levelName,
                     standard,
                     usedMarks);
 
-                return new QAIssue
-                {
-                    ElementId = elementId,
-                    Category = category,
-                    CurrentValue = "",
-                    Problem = "Mark is missing.",
-                    SuggestedValue = suggestedMark,
-                    Severity = "Major"
-                };
+                return CreateIssue(
+                    elementId,
+                    category,
+                    "",
+                    "Mark is missing.",
+                    suggestedMark);
             }
 
             // 2. Duplicate Mark
             if (usedMarks.Contains(mark))
             {
                 string suggestedMark = GenerateNextMark(
-                    category,
                     levelName,
                     standard,
                     usedMarks);
 
-                return new QAIssue
-                {
-                    ElementId = elementId,
-                    Category = category,
-                    CurrentValue = mark,
-                    Problem = "Duplicate Mark value.",
-                    SuggestedValue = suggestedMark,
-                    Severity = "Major"
-                };
+                return CreateIssue(
+                    elementId,
+                    category,
+                    mark,
+                    "Duplicate Mark value.",
+                    suggestedMark);
             }
 
-            // 3. Generate expected format
-            string expectedPattern = BuildPattern(
-                standard);
+            // 3. Validate naming format
+            string expectedPattern = BuildPattern(standard);
 
-            // 4. Validate format
             if (!Regex.IsMatch(mark, expectedPattern))
             {
                 string suggestedMark = GenerateNextMark(
-                    category,
                     levelName,
                     standard,
                     usedMarks);
 
-                return new QAIssue
-                {
-                    ElementId = elementId,
-                    Category = category,
-                    CurrentValue = mark,
-                    Problem = $"Invalid naming convention. Expected format: {BuildExample(standard)}",
-                    SuggestedValue = suggestedMark,
-                    Severity = "Major"
-                };
+                return CreateIssue(
+                    elementId,
+                    category,
+                    mark,
+                    $"Invalid naming convention. Expected format: {BuildExample(standard)}",
+                    suggestedMark);
             }
 
             return null;
+        }
+
+        private QAIssue CreateIssue(
+            long elementId,
+            string category,
+            string currentValue,
+            string problem,
+            string suggestedValue)
+        {
+            return new QAIssue
+            {
+                ElementId = elementId,
+                Category = category,
+                CurrentValue = currentValue,
+                Problem = problem,
+                SuggestedValue = suggestedValue,
+                Severity = "Major"
+            };
         }
 
         private string BuildPattern(NamingStandard standard)
@@ -111,7 +118,6 @@ namespace RevitQAQC.Core.Services
         }
 
         private string GenerateNextMark(
-            string category,
             string levelName,
             NamingStandard standard,
             HashSet<string> usedMarks)
@@ -124,9 +130,7 @@ namespace RevitQAQC.Core.Services
                     standard.LevelDigits,
                     '0');
 
-            int number = 1;
-
-            while (true)
+            for (int number = 1; ; number++)
             {
                 string numberPart =
                     number.ToString(
@@ -140,19 +144,23 @@ namespace RevitQAQC.Core.Services
                     + numberPart;
 
                 if (!usedMarks.Contains(candidate))
+                {
                     return candidate;
-
-                number++;
+                }
             }
         }
 
         private string ExtractLevelNumber(string levelName)
         {
             Match match =
-                Regex.Match(levelName ?? "", @"\d+");
+                Regex.Match(
+                    levelName ?? "",
+                    @"\d+");
 
             if (match.Success)
+            {
                 return match.Value;
+            }
 
             return "1";
         }

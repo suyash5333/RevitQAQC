@@ -13,6 +13,7 @@
 
         <!-- HEADER -->
         <StackPanel Grid.Row="0">
+
             <TextBlock Text="Issues"
                        FontSize="28"
                        FontWeight="Bold"
@@ -22,10 +23,12 @@
                        FontSize="13"
                        Foreground="#7F8C8D"
                        Margin="0,5,0,25"/>
+
         </StackPanel>
 
         <!-- SUMMARY -->
-        <Grid Grid.Row="1" Margin="0,0,0,20">
+        <Grid Grid.Row="1"
+              Margin="0,0,0,20">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -34,67 +37,95 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
 
+            <!-- TOTAL -->
             <Border Grid.Column="0"
                     Margin="0,0,12,0"
                     Background="White"
                     CornerRadius="10"
                     Padding="20">
+
                 <StackPanel>
+
                     <TextBlock Text="Total Issues"
                                Foreground="#7F8C8D"/>
-                    <TextBlock Text="0"
+
+                    <TextBlock x:Name="TotalIssuesText"
+                               Text="0"
                                FontSize="30"
                                FontWeight="Bold"
                                Foreground="#17202A"
                                Margin="0,5,0,0"/>
+
                 </StackPanel>
+
             </Border>
 
+            <!-- CRITICAL -->
             <Border Grid.Column="1"
                     Margin="0,0,12,0"
                     Background="White"
                     CornerRadius="10"
                     Padding="20">
+
                 <StackPanel>
+
                     <TextBlock Text="Critical"
                                Foreground="#7F8C8D"/>
-                    <TextBlock Text="0"
+
+                    <TextBlock x:Name="CriticalText"
+                               Text="0"
                                FontSize="30"
                                FontWeight="Bold"
                                Foreground="#DC2626"
                                Margin="0,5,0,0"/>
+
                 </StackPanel>
+
             </Border>
 
+            <!-- MAJOR -->
             <Border Grid.Column="2"
                     Margin="0,0,12,0"
                     Background="White"
                     CornerRadius="10"
                     Padding="20">
+
                 <StackPanel>
+
                     <TextBlock Text="Major"
-                               Foreground="#7F8C8D"/>
-                    <TextBlock Text="0"
+                               Foreground="#7C3AED"/>
+
+                    <TextBlock x:Name="MajorText"
+                               Text="0"
                                FontSize="30"
                                FontWeight="Bold"
                                Foreground="#D97706"
                                Margin="0,5,0,0"/>
+
                 </StackPanel>
+
             </Border>
 
+            <!-- WARNING -->
             <Border Grid.Column="3"
                     Background="White"
                     CornerRadius="10"
                     Padding="20">
+
                 <StackPanel>
-                    <TextBlock Text="Auto-Fixable"
+
+                    <TextBlock Text="Warnings"
                                Foreground="#7F8C8D"/>
-                    <TextBlock Text="0"
+
+                    <TextBlock x:Name="WarningText"
+                               Text="0"
                                FontSize="30"
                                FontWeight="Bold"
-                               Foreground="#16A34A"
+                               Foreground="#CA8A04"
                                Margin="0,5,0,0"/>
+
                 </StackPanel>
+
             </Border>
 
         </Grid>
@@ -107,43 +138,56 @@
                 BorderBrush="#E5E8EE"
                 BorderThickness="1">
 
-            <DataGrid AutoGenerateColumns="False"
+            <DataGrid x:Name="IssuesDataGrid"
+                      AutoGenerateColumns="False"
                       CanUserAddRows="False"
                       IsReadOnly="True"
                       HeadersVisibility="Column"
                       GridLinesVisibility="Horizontal"
                       RowHeight="42"
+                      ColumnHeaderHeight="40"
                       Background="White"
-                      BorderThickness="0">
+                      BorderThickness="0"
+                      FontSize="13">
 
                 <DataGrid.Columns>
 
-                    <DataGridTextColumn Header="ID"
-                                        Width="70"/>
-
                     <DataGridTextColumn Header="Check"
-                                        Width="180"/>
+                                        Binding="{Binding Check}"
+                                        Width="190"/>
 
                     <DataGridTextColumn Header="Severity"
+                                        Binding="{Binding Severity}"
                                         Width="100"/>
 
                     <DataGridTextColumn Header="Element ID"
+                                        Binding="{Binding ElementId}"
                                         Width="110"/>
 
-                    <DataGridTextColumn Header="Parameter"
-                                        Width="150"/>
+                    <DataGridTextColumn Header="Category"
+                                        Binding="{Binding Category}"
+                                        Width="140"/>
 
                     <DataGridTextColumn Header="Current Value"
+                                        Binding="{Binding CurrentValue}"
                                         Width="180"/>
 
-                    <DataGridTextColumn Header="Expected Value"
-                                        Width="180"/>
+                    <DataGridTextColumn Header="Problem"
+                                        Binding="{Binding Problem}"
+                                        Width="220"/>
 
-                    <DataGridTextColumn Header="Status"
-                                        Width="110"/>
-
-                    <DataGridTextColumn Header="Fix"
-                                        Width="*"/>
+                    <DataGridTextColumn Header="Suggested Value"
+                                        Binding="{Binding SuggestedValue}"
+                                        Width="200"/>
+                    <DataGridTemplateColumn Header="Select" Width="90">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Select"
+                    Click="SelectElement_Click"
+                    Padding="8,4"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
 
                 </DataGrid.Columns>
 

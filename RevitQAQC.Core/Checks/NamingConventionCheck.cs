@@ -8,7 +8,8 @@ namespace RevitQAQC.Core.Checks
 {
     public class NamingConventionCheck : IQACheck
     {
-        public string CheckName => "Naming Convention Check";
+        public string CheckName =>
+            "Naming Convention Check";
 
         public string Description =>
             "Checks wall element Marks against the configured naming convention.";
@@ -33,7 +34,7 @@ namespace RevitQAQC.Core.Checks
 
             var validator = new NamingConventionValidator();
 
-            // First collect existing Marks
+            // Store every existing Mark exactly as it exists in the model.
             var usedMarks = new HashSet<string>();
 
             foreach (var element in elements)
@@ -44,11 +45,11 @@ namespace RevitQAQC.Core.Checks
                 if (element.Category.Name != standard.Category)
                     continue;
 
-                Parameter markParam =
+                Parameter markParameter =
                     element.LookupParameter("Mark");
 
                 string mark =
-                    markParam?.AsString() ?? "";
+                    markParameter?.AsString() ?? "";
 
                 if (!string.IsNullOrWhiteSpace(mark))
                 {
@@ -56,7 +57,7 @@ namespace RevitQAQC.Core.Checks
                 }
             }
 
-            // Now validate each wall
+            // Validate each wall.
             foreach (var element in elements)
             {
                 if (element.Category == null)
@@ -65,11 +66,11 @@ namespace RevitQAQC.Core.Checks
                 if (element.Category.Name != standard.Category)
                     continue;
 
-                Parameter markParam =
+                Parameter markParameter =
                     element.LookupParameter("Mark");
 
                 string mark =
-                    markParam?.AsString() ?? "";
+                    markParameter?.AsString() ?? "";
 
                 Level level =
                     doc.GetElement(element.LevelId) as Level;
@@ -77,48 +78,54 @@ namespace RevitQAQC.Core.Checks
                 string levelName =
                     level?.Name ?? "Level 1";
 
-                // Temporarily remove the current Mark
-                // so it doesn't get detected as its own duplicate.
+                // Create a copy so validation of this element
+                // cannot corrupt the master list of existing Marks.
+                var marksForValidation =
+                    new HashSet<string>(usedMarks);
+
+                // The element's own Mark must not be considered
+                // a duplicate of itself.
                 if (!string.IsNullOrWhiteSpace(mark))
                 {
-                    usedMarks.Remove(mark);
+                    marksForValidation.Remove(mark);
                 }
 
-                QAIssue? issue = validator.Validate(
-                    element.Id.Value,
-                    element.Category.Name,
-                    mark,
-                    levelName,
-                    standard,
-                    usedMarks);
+                QAIssue? issue =
+                    validator.Validate(
+                        element.Id.Value,
+                        element.Category.Name,
+                        mark,
+                        levelName,
+                        standard,
+                        marksForValidation);
 
                 if (issue != null)
                 {
                     issues.Add(issue);
 
-                    // Reserve the suggested value so that
-                    // the next issue receives a different value.
-                    if (!string.IsNullOrWhiteSpace(issue.SuggestedValue))
+                    // Reserve the suggested Mark so future
+                    // suggestions don't reuse it.
+                    if (!string.IsNullOrWhiteSpace(
+                        issue.SuggestedValue))
                     {
-                        usedMarks.Add(issue.SuggestedValue);
+                        usedMarks.Add(
+                            issue.SuggestedValue);
                     }
-                }
-
-                // Add the current Mark back
-                if (!string.IsNullOrWhiteSpace(mark))
-                {
-                    usedMarks.Add(mark);
                 }
             }
 
             return new CheckResult
             {
                 CheckName = CheckName,
+
                 IsPass = issues.Count == 0,
+
                 Message = issues.Count == 0
                     ? "All wall naming conventions passed."
                     : $"{issues.Count} wall naming convention issues found.",
+
                 IssueCount = issues.Count,
+
                 Issues = issues
             };
         }
